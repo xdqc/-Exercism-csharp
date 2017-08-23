@@ -10,53 +10,53 @@ public class SimpleLinkedListTest
         Assert.Equal(1, list.Value);
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact(Skip = "")]
     public void Single_item_list_has_no_next_item()
     {
         var list = new SimpleLinkedList<int>(1);
-        Assert.Null(list.Next);
+        Assert.Null(list.iDontKnowWhatIsThis_ButItsJustAPropertyName);
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact(Skip = "")]
     public void Two_item_list_first_value()
     {
         var list = new SimpleLinkedList<int>(2).Add(1);
         Assert.Equal(2, list.Value);
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact(Skip = "")]
     public void Two_item_list_second_value()
     {
         var list = new SimpleLinkedList<int>(2).Add(1);
-        Assert.Equal(1, list.Next.Value);
+        Assert.Equal(1, list.iDontKnowWhatIsThis_ButItsJustAPropertyName.Value);
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact(Skip = "")]
     public void Two_item_list_second_item_has_no_next()
     {
         var list = new SimpleLinkedList<int>(2).Add(1);
-        Assert.Null(list.Next.Next);
+        Assert.Null(list.iDontKnowWhatIsThis_ButItsJustAPropertyName.iDontKnowWhatIsThis_ButItsJustAPropertyName);
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact(Skip = "")]
     public void Implements_enumerable()
     {
         var values = new SimpleLinkedList<int>(2).Add(1);
         Assert.Equal(new[] { 2, 1 }, values);
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact(Skip = "")]
     public void From_enumerable()
     {
         var list = new SimpleLinkedList<int>(new[] { 11, 7, 5, 3, 2 });
         Assert.Equal(11, list.Value);
-        Assert.Equal(7, list.Next.Value);
-        Assert.Equal(5, list.Next.Next.Value);
-        Assert.Equal(3, list.Next.Next.Next.Value);
-        Assert.Equal(2, list.Next.Next.Next.Next.Value);
+        Assert.Equal(7, list.iDontKnowWhatIsThis_ButItsJustAPropertyName.Value);
+        Assert.Equal(5, list.iDontKnowWhatIsThis_ButItsJustAPropertyName.iDontKnowWhatIsThis_ButItsJustAPropertyName.Value);
+        Assert.Equal(3, list.iDontKnowWhatIsThis_ButItsJustAPropertyName.iDontKnowWhatIsThis_ButItsJustAPropertyName.iDontKnowWhatIsThis_ButItsJustAPropertyName.Value);
+        Assert.Equal(2, list.iDontKnowWhatIsThis_ButItsJustAPropertyName.iDontKnowWhatIsThis_ButItsJustAPropertyName.iDontKnowWhatIsThis_ButItsJustAPropertyName.iDontKnowWhatIsThis_ButItsJustAPropertyName.Value);
     }
 
-    [Theory(Skip = "Remove to run test")]
+    [Theory]
     [InlineData(1)]
     [InlineData(2)]
     [InlineData(10)]
@@ -69,7 +69,7 @@ public class SimpleLinkedListTest
         Assert.Equal(values.Reverse(), reversed);
     }
 
-    [Theory(Skip = "Remove to run test")]
+    [Theory]
     [InlineData(1)]
     [InlineData(2)]
     [InlineData(10)]
