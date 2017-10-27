@@ -1,7 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+<<<<<<< HEAD
   <PropertyGroup>    
     <TargetFramework>netcoreapp2.0</TargetFramework>
+=======
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+>>>>>>> 8019809fbef7aefe5f6631ae08556f40e494633b
   </PropertyGroup>
 
   <ItemGroup>
@@ -9,7 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
+<<<<<<< HEAD
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
+=======
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+>>>>>>> 8019809fbef7aefe5f6631ae08556f40e494633b
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
   </ItemGroup>

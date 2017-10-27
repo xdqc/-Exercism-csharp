@@ -4,6 +4,7 @@ public static class RomanNumeralExtension
 {
     public static string ToRoman(this int value)
     {
+<<<<<<< HEAD
         if (value > 3999 || value < 1) {
             throw new ArgumentException("value not representable in Roman numerals");
         }
@@ -49,5 +50,8 @@ public static class RomanNumeralExtension
             default:
             return "";
         }
+=======
+        throw new NotImplementedException("You need to implement this function.");
+>>>>>>> 8019809fbef7aefe5f6631ae08556f40e494633b
     }
 }
