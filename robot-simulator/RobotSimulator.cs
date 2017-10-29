@@ -105,7 +105,8 @@ public class RobotSimulator
             ['A'] = Advance,
         };
 
-        instructions.Select(a => move[a])
+        instructions.Where(c => move.ContainsKey(c))    //ignore unknown commands
+                    .Select(c => move[c])
                     .ToList()
                     .ForEach(a => a.Invoke());
     }

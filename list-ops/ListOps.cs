@@ -4,47 +4,29 @@ using System.Linq;
 
 public static class ListOps
 {
+    public static List<T> Added<T>(List<T> input, T val)
+    {
+        input.Add(val);
+        return input;
+    }
     public static int Length<T>(List<T> input)
     {
-        int i = 0;
-        foreach (var item in input)
-        {
-            i++;
-        }
-        return i;
+        return Foldl((acc, item) => acc + 1, 0, input);
     }
 
     public static List<T> Reverse<T>(List<T> input)
     {
-        var output = new List<T>();
-        for (int i = Length(input)-1; i >= 0; i--)
-        {
-            output.Add(input[i]);
-        }
-        return output;
+        return Foldr((item, acc) => Added(acc, item), new List<T>(), input);
     }
 
     public static List<TOut> Map<TIn, TOut>(Func<TIn, TOut> map, List<TIn> input)
     {
-        var output = new List<TOut>();
-        foreach (var item in input)
-        {
-            output.Add(map(item));
-        }
-        return output;
+        return Foldl((acc, item) => Added(acc, map(item)), new List<TOut>(), input);
     }
 
     public static List<T> Filter<T>(Func<T, bool> predicate, List<T> input)
     {
-        var output = new List<T>();
-        foreach (var item in input)
-        {
-            if (predicate(item))
-            {
-                output.Add(item);
-            }
-        }
-        return output;
+        return Foldl((acc, item) => predicate(item) ? Added(acc, item) : acc, new List<T>(), input);
     }
 
     public static TOut Foldl<TIn, TOut>(Func<TOut, TIn, TOut> func, TOut start, List<TIn> input)
@@ -58,33 +40,22 @@ public static class ListOps
 
     public static TOut Foldr<TIn, TOut>(Func<TIn, TOut, TOut> func, TOut start, List<TIn> input)
     {
-        input = Reverse(input);
-        foreach (var item in input)
+        for(int i = Length(input)-1; i >= 0; i--)
         {
-            start = func(item, start);
+            start = func(input[i], start);
         }
         return start;
     }
 
-    public static List<T> Concat<T>(List<List<T>> input)
-    {
-        var output = new List<T>();
-        foreach (var list in input)
-        {
-            foreach (var item in list)
-            {
-                output.Add(item);
-            }
-        }
-        return output;
-    }
-
     public static List<T> Append<T>(List<T> left, List<T> right)
     {
-        foreach (var item in right)
-        {
-            left.Add(item);
-        }
-        return left;
+        return Foldl(Added, new List<T>(left), right);
     }
+
+    public static List<T> Concat<T>(List<List<T>> input)
+    {
+        return Foldl(Append, new List<T>(), input);
+    }
+
+
 }

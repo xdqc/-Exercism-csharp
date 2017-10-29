@@ -56,4 +56,13 @@ public class RobotSimulatorTest
         Assert.Equal(Bearing.North, roomba.Bearing);
         Assert.Equal(new Coordinate(11, 5), roomba.Coordinate);
     }
+
+    [Fact(Skip = "")]
+    public void Roomba_with_invalid_commands()
+    {
+        var roomba = new RobotSimulator(Bearing.South, new Coordinate(8, 4));
+        roomba.Simulate("LAAARHRRALHLLL");
+        Assert.Equal(Bearing.North, roomba.Bearing);
+        Assert.Equal(new Coordinate(11, 5), roomba.Coordinate);
+    }
 }
