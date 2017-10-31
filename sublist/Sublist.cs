@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public enum SublistType
 {
@@ -14,10 +15,27 @@ public static class Sublist
     public static SublistType Classify<T>(List<T> list1, List<T> list2)
         where T : IComparable
     {
-<<<<<<< HEAD
-        throw new NotImplementedException("You need to implement this function.");
-=======
-        
->>>>>>> 8019809fbef7aefe5f6631ae08556f40e494633b
+        bool aSubB = list1.Intersect(list2).SequenceEqual(list1);
+        bool bSubA = list2.Intersect(list1).SequenceEqual(list2);
+
+        if (aSubB && bSubA)
+        {
+            return SublistType.Equal;
+        }
+        else
+        {
+            if (aSubB)
+            {
+                return SublistType.Sublist;
+            }
+            else if (bSubA)
+            {
+                return SublistType.Superlist;
+            }
+            else
+            {
+                return SublistType.Unequal;
+            }
+        }
     }
 }
