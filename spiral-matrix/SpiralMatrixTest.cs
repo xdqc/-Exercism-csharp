@@ -4,11 +4,12 @@ using Xunit;
 
 public class SpiralMatrixTest
 {
+    SpiralMatrix sm = new SpiralMatrix();
     [Fact]
     public void Empty_spiral()
     {
         var spiral = new int[,] { };
-        Assert.Equal(spiral, SpiralMatrix.GetMatrix(0));
+        Assert.Equal(spiral, sm.GetMatrix(0));
     }
 
     [Fact(Skip = "")]
@@ -19,7 +20,7 @@ public class SpiralMatrixTest
             { 1 }
         };
 
-        Assert.Equal(spiral, SpiralMatrix.GetMatrix(1));
+        Assert.Equal(spiral, sm.GetMatrix(1));
     }
 
     [Fact(Skip = "")]
@@ -31,7 +32,7 @@ public class SpiralMatrixTest
             { 4, 3 }
         };
 
-        Assert.Equal(spiral, SpiralMatrix.GetMatrix(2));
+        Assert.Equal(spiral, sm.GetMatrix(2));
     }
 
     [Fact(Skip = "")]
@@ -44,7 +45,7 @@ public class SpiralMatrixTest
             { 7, 6, 5 }
         };
 
-        Assert.Equal(spiral, SpiralMatrix.GetMatrix(3));
+        Assert.Equal(spiral, sm.GetMatrix(3));
     }
 
     [Fact(Skip = "")]
@@ -58,7 +59,7 @@ public class SpiralMatrixTest
             { 10, 9, 8, 7}
         };
 
-        Assert.Equal(spiral, SpiralMatrix.GetMatrix(4));
+        Assert.Equal(spiral, sm.GetMatrix(4));
     }
 
     [Fact(Skip = "")]
@@ -73,6 +74,6 @@ public class SpiralMatrixTest
             { 13, 12, 11, 10, 9 }
         };
 
-        Assert.Equal(spiral, SpiralMatrix.GetMatrix(5));
+        Assert.Equal(spiral, sm.GetMatrix(5));
     }
 }

@@ -2,66 +2,29 @@
 
 public class SpiralMatrix
 {
-    public static int[,] GetMatrix(int size)
+    private (int x, int y) dir = (1, 0);
+    private (int x, int y) pos = (0, 0);
+    private void Rotate() => dir = dir.y == 0 ? (0, dir.x) : (-dir.y, 0);
+    private void Step((int x, int y) d) => pos = (pos.x + d.x, pos.y + d.y);
+    public int[,] GetMatrix(int size)
     {
-        int x = 0;
-        int y = 0;
-        Direction dir = Direction.Right;
-        int[,] spiral = new int[size, size];
+        int[,] m = new int[size, size];
         for (int i = 1; i <= size * size; i++)
         {
-            switch (dir)
+            m[pos.y, pos.x] = i;
+            try
             {
-                case Direction.Right:
-                    if (y >= size || spiral[x, y] != 0)
-                    {
-                        y--;
-                        x++;
-                        dir = Direction.Down;
-                        goto case Direction.Down;
-                    }
-                    spiral[x, y++] = i;
-                    break;
-                case Direction.Down:
-                    if (x >= size || spiral[x, y] != 0)
-                    {
-                        x--;
-                        y--;
-                        dir = Direction.Left;
-                        goto case Direction.Left;
-                    }
-                    spiral[x++, y] = i;
-                    break;
-                case Direction.Left:
-                    if (y < 0 || spiral[x, y] != 0)
-                    {
-                        y++;
-                        x--;
-                        dir = Direction.Up;
-                        goto case Direction.Up;
-                    }
-                    spiral[x, y--] = i;
-                    break;
-                case Direction.Up:
-                    if (x < 0 || spiral[x, y] != 0)
-                    {
-                        x++;
-                        y++;
-                        dir = Direction.Right;
-                        goto case Direction.Right;
-                    }
-                    spiral[x--, y] = i;
-                    break;
+                Step(dir);
+                if (m[pos.y, pos.x] != 0) throw new IndexOutOfRangeException();
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Step((-dir.x, -dir.y));
+                Rotate();
+                Step(dir);
             }
         }
-        return spiral;
+        return m;
     }
-}
 
-public enum Direction
-{
-    Left,
-    Down,
-    Right,
-    Up,
 }
