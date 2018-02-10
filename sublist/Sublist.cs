@@ -12,30 +12,26 @@ public enum SublistType
 
 public static class Sublist
 {
-    public static SublistType Classify<T>(List<T> list1, List<T> list2)
-        where T : IComparable
-    {
-        bool aSubB = list1.Intersect(list2).SequenceEqual(list1);
-        bool bSubA = list2.Intersect(list1).SequenceEqual(list2);
+    private static Dictionary<(bool, bool), SublistType> sublistType = new Dictionary<(bool, bool), SublistType>(){
+        {(true, true), SublistType.Equal},
+        {(true, false), SublistType.Sublist},
+        {(false, true), SublistType.Superlist},
+        {(false, false), SublistType.Unequal}
+    };
 
-        if (aSubB && bSubA)
+    public static SublistType Classify<T>(List<T> list1, List<T> list2) where T : IComparable =>
+        sublistType[(IsSublist(list1, list2), IsSublist(list2, list1))];
+
+    public static bool IsSublist<T>(List<T> shortList, List<T> longList) where T : IComparable
+    {
+        try
         {
-            return SublistType.Equal;
+            return Enumerable.Range(0, longList.Count - shortList.Count + 1).Any(i =>
+                    longList.GetRange(i, shortList.Count).SequenceEqual(shortList));
         }
-        else
+        catch (ArgumentOutOfRangeException)
         {
-            if (aSubB)
-            {
-                return SublistType.Sublist;
-            }
-            else if (bSubA)
-            {
-                return SublistType.Superlist;
-            }
-            else
-            {
-                return SublistType.Unequal;
-            }
+            return false;
         }
     }
 }
