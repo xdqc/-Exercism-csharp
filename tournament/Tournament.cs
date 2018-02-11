@@ -8,8 +8,7 @@ public static class Tournament
 {
     public static void Tally(Stream inStream, Stream outStream)
     {
-        StreamReader reader = new StreamReader(inStream);
-        string input = reader.ReadToEnd();
+        string input = new StreamReader(inStream).ReadToEnd();
         string[] records = input.Split(Environment.NewLine);
 
         // int[5] indicates [match played ,win, draw, loss, points]
@@ -56,24 +55,23 @@ public static class Tournament
         }
 
         // caulculate points
-        teamStats.ToList()
-            .ForEach(t =>
-            {
-                t.Value[0] = t.Value[1] + t.Value[2] + t.Value[3];
-                t.Value[4] = t.Value[1] * 3 + t.Value[2];
-            });
+        teamStats.ToList().ForEach(t =>
+        {
+            t.Value[0] = t.Value[1] + t.Value[2] + t.Value[3];  //matches played
+            t.Value[4] = t.Value[1] * 3 + t.Value[2];           //points
+        });
+
         var teams = teamStats.OrderByDescending(t => t.Value[4]).ThenBy(t => t.Key);
 
-        // output
-        string output = "Team                           | MP |  W |  D |  L |  P" + Environment.NewLine;
-        foreach (var team in teams)
-        {
-            output += $"{team.Key.PadRight(31)}|  {team.Value[0]} |  {team.Value[1]} |  {team.Value[2]} |  {team.Value[3]} |  {team.Value[4]}" + Environment.NewLine;
-        }
+        string formatter = @"{0,-30} | {1,2} | {2,2} | {3,2} | {4,2} | {5,2}";
+
+        string output = teams.Aggregate(string.Format(formatter,"Team", "MP","W","D","L","P"), (acc, team) => acc + Environment.NewLine +
+        $"{team.Key,-30} | {team.Value[0],2} | {team.Value[1],2} | {team.Value[2],2} | {team.Value[3],2} | {team.Value[4],2}");
+
         StreamWriter writer = new StreamWriter(outStream);
         writer.Write(output);
         writer.Flush();
         outStream.Position = 0;
-    }  
+    }
 }
 
