@@ -8,49 +8,41 @@ public static class Tournament
 {
     public static void Tally(Stream inStream, Stream outStream)
     {
-        string input = new StreamReader(inStream).ReadToEnd();
-        string[] records = input.Split(Environment.NewLine);
-
         // int[5] indicates [match played ,win, draw, loss, points]
         Dictionary<string, int[]> teamStats = new Dictionary<string, int[]>();
 
-        // process input
-        foreach (var record in records)
+        using (var reader = new StreamReader(inStream))
         {
-            if (record == "")
-                continue;
-
-            string[] entries = record.Split(';');
-            string team1 = entries[0];
-            string team2 = entries[1];
-            string result = entries[2];
-
-            // Add new teams to teamStats
-            if (!teamStats.ContainsKey(team1))
+            // process input
+            for (var record = default(string); (record = reader.ReadLine()) != null;)
             {
-                teamStats.Add(team1, new int[5]);
-            }
-            if (!teamStats.ContainsKey(team2))
-            {
-                teamStats.Add(team2, new int[5]);
-            }
 
-            switch (result)
-            {
-                case "win":
-                    teamStats[team1][1]++;
-                    teamStats[team2][3]++;
-                    break;
-                case "loss":
-                    teamStats[team1][3]++;
-                    teamStats[team2][1]++;
-                    break;
-                case "draw":
-                    teamStats[team1][2]++;
-                    teamStats[team2][2]++;
-                    break;
-                default:
-                    break;
+                string[] entries = record.Split(';');
+                string team1 = entries[0];
+                string team2 = entries[1];
+                string result = entries[2];
+
+                // Add new teams to teamStats
+                if (!teamStats.ContainsKey(team1)) teamStats.Add(team1, new int[5]);
+                if (!teamStats.ContainsKey(team2)) teamStats.Add(team2, new int[5]);
+
+                switch (result)
+                {
+                    case "win":
+                        teamStats[team1][1]++;
+                        teamStats[team2][3]++;
+                        break;
+                    case "loss":
+                        teamStats[team1][3]++;
+                        teamStats[team2][1]++;
+                        break;
+                    case "draw":
+                        teamStats[team1][2]++;
+                        teamStats[team2][2]++;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
@@ -65,13 +57,13 @@ public static class Tournament
 
         string formatter = @"{0,-30} | {1,2} | {2,2} | {3,2} | {4,2} | {5,2}";
 
-        string output = teams.Aggregate(string.Format(formatter,"Team", "MP","W","D","L","P"), (acc, team) => acc + Environment.NewLine +
-        $"{team.Key,-30} | {team.Value[0],2} | {team.Value[1],2} | {team.Value[2],2} | {team.Value[3],2} | {team.Value[4],2}");
-
-        StreamWriter writer = new StreamWriter(outStream);
-        writer.Write(output);
-        writer.Flush();
-        outStream.Position = 0;
+        using (var writer = new StreamWriter(outStream))
+        {
+            writer.WriteLine(string.Format(formatter, "Team", "MP", "W", "D", "L", "P"));
+            foreach (var team in teams)
+            {
+                writer.WriteLine(string.Format(formatter, team.Key, team.Value[0], team.Value[1], team.Value[2], team.Value[3], team.Value[4]));
+            }
+        }
     }
 }
-
