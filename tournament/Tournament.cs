@@ -1,22 +1,23 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using MathNet.Numerics.LinearAlgebra;
 
 public static class Tournament
 {
-    static readonly int[] win = { 1, 1, 0, 0, 3 };
-    static readonly int[] draw = { 1, 0, 1, 0, 1 };
-    static readonly int[] loss = { 1, 0, 0, 1, 0 };
-    static void process(Dictionary<string, int[]> s, int r, string t) =>
-        s[t] = r == 0 ? s[t].Zip(draw, (x, y) => x + y).ToArray() :
-               r == 1 ? s[t].Zip(win, (x, y) => x + y).ToArray() :
-                        s[t].Zip(loss, (x, y) => x + y).ToArray();
+    static readonly Vector<float> win = Vector<float>.Build.Dense(new float[] { 1, 1, 0, 0, 3 });
+    static readonly Vector<float> draw = Vector<float>.Build.Dense(new float[] { 1, 0, 1, 0, 1 });
+    static readonly Vector<float> loss = Vector<float>.Build.Dense(new float[] { 1, 0, 0, 1, 0 });
+    static Vector<float> process(Dictionary<string, Vector<float>> s, int r, string t)
+    {
+        if (!s.ContainsKey(t)) s[t] = Vector<float>.Build.Sparse(5);
+        return r == 0 ? s[t].Add(draw) : r == 1 ? s[t].Add(win) : s[t].Add(loss);
+    }
+
     public static void Tally(Stream inStream, Stream outStream)
     {
-        // int[5] indicates [match played ,win, draw, loss, points]
-        Dictionary<string, int[]> teamStats = new Dictionary<string, int[]>();
+        // float[5] indicates [match played ,win, draw, loss, pofloats]
+        var teamStats = new Dictionary<string, Vector<float>>();
         using (var reader = new StreamReader(inStream))
         {
             for (var record = default(string); (record = reader.ReadLine()) != null;)
@@ -25,10 +26,8 @@ public static class Tournament
                 string team1 = entries[0];
                 string team2 = entries[1];
                 int result = entries[2] == "draw" ? 0 : entries[2] == "win" ? 1 : -1;
-                if (!teamStats.ContainsKey(team1)) teamStats[team1] = new int[5];
-                if (!teamStats.ContainsKey(team2)) teamStats[team2] = new int[5];
-                process(teamStats, result, team1);
-                process(teamStats, -result, team2);
+                teamStats[team1] = process(teamStats, result, team1);
+                teamStats[team2] = process(teamStats, -result, team2);
             }
         }
         string formatter = @"{0,-30} | {1,2} | {2,2} | {3,2} | {4,2} | {5,2}";
