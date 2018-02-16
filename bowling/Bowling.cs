@@ -9,55 +9,24 @@ public class BowlingGame
     private char prevPrevType = 'o';
     private int? prevPin = null;
     private int score = 0;
-
-    private void NextFrame(char t)
+    private void NextFrame(char t, int? pins)
     {
-        this.frame++;
-        this.prevPin = null;
-        this.prevPrevType = this.prevType;
-        this.prevType = t;
+        if (pins == null) frame++;
+        prevPin = (pins.HasValue && pins < 10) ? pins : null;
+        prevPrevType = t == 'i' ? 'o' : prevType;
+        prevType = t == 'i' ? prevType == 'x' ? 's' : 'o' : t;
     }
-
     public void Roll(int pins)
     {
-        if (pins < 0 || pins > 10 || (prevType == 'o' && frame == 10))
-            throw new ArgumentException();
-        if (prevPin != null && prevPin + pins > 10)
-            throw new ArgumentException();
-
-        score += pins;
-        if (prevPrevType == 'x') score += pins;
-        if (frame == 10) //fill ball
-        {
-            if (pins < 10) prevPin = pins;
-            prevType = prevType == 'x' ? 's' : 'o';
-            prevPrevType = 'o';
-        }
+        if (pins < 0 || pins > 10 || prevType == 'o' && frame == 10 || prevPin.HasValue && prevPin + pins > 10) throw new ArgumentException();
+        score += prevPrevType == 'x' ? pins * 2 : pins;
+        if (frame == 10) NextFrame('i', pins);          //fill ball
         else
         {
             if (prevType == 's' || prevType == 'x') score += pins;
-            if (prevPin == null)
-            {
-                if (pins == 10) NextFrame('x');                //strike
-                else
-                {
-                    prevPin = pins;
-                    prevPrevType = prevType;
-                    prevType = 'o';
-                }
-            }
-            else
-            {
-                if (prevPin + pins == 10) NextFrame('s');   //spare
-                else NextFrame('o');                        //open
-            }
+            if (prevPin == null) NextFrame(pins == 10 ? 'x' : 'o', pins == 10 ? null : (int?)pins);     //strike
+            else NextFrame((prevPin + pins == 10) ? 's' : 'o', null);                                   //spare:open
         }
     }
-
-    public int Score()
-    {
-        if (frame != 10 || prevType != 'o')
-            throw new ArgumentException();
-        return this.score;
-    }
+    public int Score() => frame == 10 && prevType == 'o' ? score : throw new ArgumentException();
 }
