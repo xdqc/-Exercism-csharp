@@ -1,32 +1,21 @@
 ﻿using System;
-using System.Linq;
-
 
 public class BowlingGame
 {
-    private int frame = 0;
-    private char prevType = 'o';
-    private char prevPrevType = 'o';
-    private int? prevPin = null;
-    private int score = 0;
+    private int frame = 0, score = 0;
+    private char pT = 'o', ppT;     //(previous of) previous roll Type: x-strike, s-spare, o-open, i-fillball
+    private int? op = null;         //knocked pins by first throw
     private void NextFrame(char t, int? pins)
     {
-        if (pins == null) frame++;
-        prevPin = (pins.HasValue && pins < 10) ? pins : null;
-        prevPrevType = t == 'i' ? 'o' : prevType;
-        prevType = t == 'i' ? prevType == 'x' ? 's' : 'o' : t;
+        if (pins == null && frame < 10) frame++;
+        op = pins < 10 ? pins : null;
+        (ppT, pT) = t == 'i' ? ('o', pT == 'x' ? 's' : 'o') : (pT, t);
     }
     public void Roll(int pins)
     {
-        if (pins < 0 || pins > 10 || prevType == 'o' && frame == 10 || prevPin.HasValue && prevPin + pins > 10) throw new ArgumentException();
-        score += prevPrevType == 'x' ? pins * 2 : pins;
-        if (frame == 10) NextFrame('i', pins);          //fill ball
-        else
-        {
-            if (prevType == 's' || prevType == 'x') score += pins;
-            if (prevPin == null) NextFrame(pins == 10 ? 'x' : 'o', pins == 10 ? null : (int?)pins);     //strike
-            else NextFrame((prevPin + pins == 10) ? 's' : 'o', null);                                   //spare:open
-        }
+        if (pins < 0 || pins > 10 || pT == 'o' && frame == 10 || op + pins > 10) throw new ArgumentException();
+        score += pins * (1 + (frame != 10 && pT != 'o' ? 1 : 0) + (ppT == 'x' ? 1 : 0));
+        NextFrame(frame == 10 ? 'i' : pins == 10 ? 'x' : op + pins == 10 ? 's' : 'o', !op.HasValue && pins < 10 ? (int?)pins : null);
     }
-    public int Score() => frame == 10 && prevType == 'o' ? score : throw new ArgumentException();
+    public int Score() => frame == 10 && pT == 'o' ? score : throw new ArgumentException();
 }
