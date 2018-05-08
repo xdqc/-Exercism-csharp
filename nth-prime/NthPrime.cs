@@ -11,9 +11,8 @@ public static class NthPrime
     }
 
     public static IEnumerable<int> Sieve(){
-        List<int> primes = new List<int>(){2};
-        yield return 2;
-        for (int n = 3; ; n+=2)
+        List<int> primes = new List<int>();
+        for (int n = 2; ; ++n)
         {
             if (primes.All(p => n%p>0)){
                 primes.Add(n);
